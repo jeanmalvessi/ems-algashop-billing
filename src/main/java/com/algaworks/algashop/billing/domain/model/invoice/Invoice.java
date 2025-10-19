@@ -93,7 +93,7 @@ public class Invoice {
         setStatus(InvoiceStatus.PAID);
     }
 
-    public void cancel() {
+    public void cancel(String cancelReason) {
         if (isCanceled()) {
             throw new DomainException(String.format("Invoice %s is already canceled", this.getId()));
         }
