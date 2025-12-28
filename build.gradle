@@ -1,8 +1,16 @@
+buildscript {
+    dependencies {
+        classpath 'org.flywaydb:flyway-core:11.19.0'
+        classpath 'org.flywaydb:flyway-database-postgresql:11.19.0'
+    }
+}
+
 plugins {
     id 'idea'
 	id 'java'
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.flywaydb.flyway' version '11.19.0'
 }
 
 group = 'com.algaworks.algashop'
@@ -28,11 +36,13 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'commons-validator:commons-validator:1.9.0'
+    implementation 'commons-validator:commons-validator:1.10.0'
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.1.0'
     implementation 'org.modelmapper:modelmapper:3.2.4'
     implementation 'org.apache.commons:commons-lang3:3.18.0'
-    runtimeOnly 'com.h2database:h2'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'
+    runtimeOnly 'org.postgresql:postgresql'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.assertj:assertj-core:3.27.3'
