@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class CreditCardManagementService {
+public class CreditCardManagementApplicationService {
 
     private final CreditCardRepository creditCardRepository;
     private final CreditCardProviderService creditCardProviderService;

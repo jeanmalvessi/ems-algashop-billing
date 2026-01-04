@@ -1,6 +1,6 @@
-package com.algaworks.algashop.billing.presentation;
+package com.algaworks.algashop.billing.presentation.creditcard;
 
-import com.algaworks.algashop.billing.application.creditcard.management.CreditCardManagementService;
+import com.algaworks.algashop.billing.application.creditcard.management.CreditCardManagementApplicationService;
 import com.algaworks.algashop.billing.application.creditcard.management.TokenizedCreditCardInput;
 import com.algaworks.algashop.billing.application.creditcard.query.CreditCardOutput;
 import com.algaworks.algashop.billing.application.creditcard.query.CreditCardQueryService;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class CreditCardController {
 
-    private final CreditCardManagementService creditCardManagementService;
+    private final CreditCardManagementApplicationService creditCardManagementService;
     private final CreditCardQueryService creditCardQueryService;
 
     @PostMapping
