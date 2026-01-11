@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: 'jdbc:postgresql://algashop-postgres:5432/billing'
+    url: 'jdbc:postgresql://postgres:5432/billing'
   jpa:
     show-sql: 'true'
   flyway:
     locations: 'classpath:db/migration'
     user: 'postgres'
     password: 'postgres'
-    url: 'jdbc:postgresql://algashop-postgres:5432/billing'
+    url: 'jdbc:postgresql://postgres:5432/billing'
 algashop:
   integrations:
     payment:
