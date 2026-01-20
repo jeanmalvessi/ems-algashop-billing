@@ -16,7 +16,7 @@ import java.util.UUID;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
 
 @Import(FastpayCreditCardTokenizationAPIClientConfig.class)
-public abstract class AbstractFastpayIT {
+public abstract class AbstractFastpayIT extends AbstractInfrastructureIT {
 
     @Autowired
     protected CreditCardProviderServiceFastpayImpl creditCardProvider;
