@@ -24,6 +24,8 @@ Built using a **pragmatic DDD** approach, allowing domain models to be closer to
 - **Spring Data JPA** + PostgreSQL 17 (persistence)
 - **Flyway** (database migrations)
 - **Spring REST Client** (FastPay payment gateway integration)
+- **Spring Cloud Circuit Breaker** (resilience and retries)
+- **Spring Boot Actuator** (monitoring and health checks)
 - **WireMock** (mocks for FastPay API in tests)
 - **Testcontainers** (PostgreSQL integration tests)
 - **ModelMapper** (entity/DTO mapping)
