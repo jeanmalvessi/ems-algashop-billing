@@ -1,13 +1,13 @@
 spring:
   application:
-    name: 'billing'
+    name: billing
   jpa:
     hibernate:
-      ddl-auto: 'none'
-    show-sql: 'false'
+      ddl-auto: none
+    show-sql: false
   flyway:
-    enabled: 'false'
-    locations: 'classpath:db/migration'
+    enabled: false
+    locations: classpath:db/migration
   cloud:
     discovery:
       client:
@@ -16,21 +16,24 @@ spring:
 management:
   info:
     env.enabled: true
+  health:
+    redis:
+      enabled: false
   endpoints:
     web:
       exposure:
-        include: 'health,info'
+        include: health,info
   endpoint:
     health:
-      show-details: 'always'
+      show-details: always
       group:
         readiness:
-          include: 'db,readinessState'
+          include: db,readinessState
       status:
         order: "DOWN,OUT_OF_SERVICE,UNKNOWN,DEGRADED,UP"
 info:
-  app.name: 'AlgaShop Ordering API'
+  app.name: AlgaShop Ordering API
 algashop:
   integrations:
     payment:
-      provider: 'FASTPAY'
+      provider: FASTPAY

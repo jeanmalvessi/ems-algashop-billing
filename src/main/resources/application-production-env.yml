@@ -7,14 +7,14 @@ spring:
     show-sql: true
   flyway:
     enabled: false
-    locations: 'classpath:db/migration'
+    locations: classpath:db/migration
     user: ${FLYWAY_USERNAME}
     password: ${FLYWAY_PASSWORD}
     url: ${DATASOURCE_JDBC_URL}
 algashop:
   integrations:
     payment:
-      provider: 'FASTPAY'
+      provider: FASTPAY
       fastpay:
         hostname: ${FASTPAY_HOSTNAME}
         private-token: ${FASTPAY_PRIVATE_TOKEN}
