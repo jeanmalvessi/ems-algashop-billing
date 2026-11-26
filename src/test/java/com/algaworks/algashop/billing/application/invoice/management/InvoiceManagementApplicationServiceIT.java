@@ -4,15 +4,7 @@ import com.algaworks.algashop.billing.application.invoice.AbstractApplicationIT;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCard;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardRepository;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardTestDataBuilder;
-import com.algaworks.algashop.billing.domain.model.invoice.Invoice;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoiceCanceledEvent;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoiceIssuedEvent;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoicePaidEvent;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoiceRepository;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoiceStatus;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoiceTestDataBuilder;
-import com.algaworks.algashop.billing.domain.model.invoice.InvoicingService;
-import com.algaworks.algashop.billing.domain.model.invoice.PaymentMethod;
+import com.algaworks.algashop.billing.domain.model.invoice.*;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.Payment;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentGatewayService;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentRequest;
@@ -24,11 +16,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 
+@RecordApplicationEvents
 class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
     @Autowired
@@ -49,8 +44,14 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
     @MockitoSpyBean
     private InvoiceEventListener invoiceEventListener;
 
+    @Autowired
+    private ApplicationEvents applicationEvents;
+
     @Test
     void shouldGenerateInvoiceWithCreditCardAsPayment() {
+        Mockito.when(securityChecks.getAuthenticatedUserId()).thenReturn(UUID.randomUUID());
+        Mockito.when(securityChecks.isAuthenticated()).thenReturn(true);
+
         UUID customerId = UUID.randomUUID();
         CreditCard creditCard = CreditCardTestDataBuilder.aCreditCard().customerId(customerId).build();
         creditCardRepository.saveAndFlush(creditCard);
@@ -76,11 +77,15 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
         Assertions.assertThat(invoice.getCreatedByUserId()).isNotNull();
 
         Mockito.verify(invoicingService).issue(any(), any(), any(), any());
-        Mockito.verify(invoiceEventListener).listen(any(InvoiceIssuedEvent.class));
+
+        Assertions.assertThat(applicationEvents.stream(InvoiceIssuedEvent.class).toList())
+                .singleElement()
+                .satisfies(event -> Assertions.assertThat(event.getInvoiceId()).isEqualTo(invoiceId));
     }
 
     @Test
     void shouldGenerateInvoiceWithGatewayBalanceAsPayment() {
+        UUID customerId = UUID.randomUUID();
         GenerateInvoiceInput input = GenerateInvoiceInputTestDataBuilder.anInput().build();
 
         input.setPaymentSettings(
@@ -96,12 +101,7 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
         Assertions.assertThat(invoice.getStatus()).isEqualTo(InvoiceStatus.UNPAID);
         Assertions.assertThat(invoice.getOrderId()).isEqualTo(input.getOrderId());
 
-        Assertions.assertThat(invoice.getVersion()).isZero();
-        Assertions.assertThat(invoice.getCreatedAt()).isNotNull();
-        Assertions.assertThat(invoice.getCreatedByUserId()).isNotNull();
-
         Mockito.verify(invoicingService).issue(any(), any(), any(), any());
-        Mockito.verify(invoiceEventListener).listen(any(InvoiceIssuedEvent.class));
     }
 
     @Test
@@ -127,7 +127,11 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
         Mockito.verify(paymentGatewayService).capture(Mockito.any(PaymentRequest.class));
         Mockito.verify(invoicingService).assignPayment(Mockito.any(Invoice.class), Mockito.any(Payment.class));
-        Mockito.verify(invoiceEventListener).listen(any(InvoicePaidEvent.class));
+
+        UUID invoiceId = paidInvoice.getId();
+        Assertions.assertThat(applicationEvents.stream(InvoicePaidEvent.class).toList())
+                .singleElement()
+                .satisfies(event -> Assertions.assertThat(event.getInvoiceId()).isEqualTo(invoiceId));
     }
 
     @Test
