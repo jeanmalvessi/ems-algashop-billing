@@ -31,6 +31,7 @@ spring:
     properties:
       spring.json.type.mapping:
         Ordering.OrderPlacedIntegrationEvent:com.algaworks.algashop.billing.application.order.event
+        Billing.InvoiceIssuedIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceIssuedIntegrationEvent
     admin:
       fail-fast: true
       auto-create: true
